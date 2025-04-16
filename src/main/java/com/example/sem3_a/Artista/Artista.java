@@ -1,6 +1,7 @@
 package com.example.sem3_a.Artista;
 
 
+import com.example.sem3_a.Cancion.Cancion;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class Artista {
     private String username;
     private Long id; //tipo UUID id, son ids unicos y complejos
     @OneToMany(mappedBy ="artista",cascade = CascadeType.ALL)
-    private List<Artista> artistas;
+    private List<Cancion> canciones;
 
 
 }
