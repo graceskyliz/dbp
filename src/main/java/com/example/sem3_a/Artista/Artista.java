@@ -23,6 +23,7 @@ public class Artista {
 
     @ManyToMany(mappedBy ="artistas")
     private List<Cancion> canciones;
+    //ola
 
 
 }
