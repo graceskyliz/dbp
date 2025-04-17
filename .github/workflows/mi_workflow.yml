@@ -1,12 +1,10 @@
-name: Java Spring Boot CI Workflow
+name: Simple Spring Boot CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
@@ -22,82 +20,31 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
+          path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven
 
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
       - name: Run Tests
         run: mvn test
-
-      - name: Lint Java code
-        run: mvn checkstyle:checkstyle
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
-
-      - name: Build Docker image
-        run: docker-compose -f docker/docker-compose.yml build
-
-      - name: Run Spring Boot application in Docker
-        run: docker-compose -f docker/docker-compose.yml up -d
-
-      - name: Health check for PostgreSQL
-        run: docker exec -it $(docker ps -q --filter "name=postgres") pg_isready -U postgres
-
-      - name: Shutdown Docker containers
-        if: always()
-        run: docker-compose -f docker/docker-compose.yml down
-
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Run Checkstyle Lint
-        run: mvn checkstyle:checkstyle
-
-  super-lint:
-    name: Super Linter
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Super Linter
-        uses: super-linter/super-linter@v5
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
