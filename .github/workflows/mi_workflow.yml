@@ -1,50 +1,24 @@
-name: Simple Spring Boot CI
+name: Java CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]  # Solo cuando haces push a main
   pull_request:
-    branches: [main]
+    branches: [ main ]  # Opcional: también cuando haces PR a main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: mydatabase
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: Checkout code
+      - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: Set up Java 17
+      - name: Configurar Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven
-
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
-
-      - name: Run Tests
-        run: mvn test
+      - name: Construir y correr tests con Maven
+        run: mvn clean verify
