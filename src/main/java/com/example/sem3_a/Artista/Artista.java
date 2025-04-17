@@ -12,9 +12,16 @@ import java.util.List;
 public class Artista {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String username;
     private Long id; //tipo UUID id, son ids unicos y complejos
-    @OneToMany(mappedBy ="artista",cascade = CascadeType.ALL)
+
+    @Column(unique = true)
+    private String username;
+
+    private String descripcion;
+
+    private String email;
+
+    @ManyToMany(mappedBy ="artistas")
     private List<Cancion> canciones;
 
 
