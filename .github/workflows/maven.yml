@@ -29,7 +29,17 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
+    - name: Show Surefire Reports
+      run: |
+        echo "Contents of target/surefire-reports:"
+        ls -l target/surefire-reports
+        if [ -f "target/surefire-reports/*.txt" ]; then
+          echo "Contents of TXT reports:"
+          cat target/surefire-reports/*.txt
+        fi
+        if [ -f "target/surefire-reports/*.xml" ]; then
+          echo "Contents of XML reports (first one if exists):"
+          head target/surefire-reports/*.xml
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
