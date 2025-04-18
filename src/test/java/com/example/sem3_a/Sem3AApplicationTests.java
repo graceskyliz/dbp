@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class Sem3AApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
 }
