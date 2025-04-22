@@ -3,6 +3,7 @@ package com.example.sem3_a.Artista;
 import com.example.sem3_a.Cancion.Cancion;
 import com.example.sem3_a.Cancion.CancionController;
 import com.example.sem3_a.Cancion.CancionRepository;
+import com.example.sem3_a.Exceptions.ResourceConflictException;
 import com.example.sem3_a.Exceptions.ResourceNotFoundException;
 import com.example.sem3_a.dto.ArtistaResponseDto;
 import com.example.sem3_a.dto.NewArtistaDto;
@@ -41,17 +42,25 @@ public class ArtistaController {
 
     @PostMapping
     public ResponseEntity<Artista> createArtista(@RequestBody NewArtistaDto artista) {
-        Artista nuevoArtista = new Artista(); // crea un nuevo artista
-        //setters/getters
+        Artista nuevoArtista = new Artista();
         nuevoArtista.setUsername(artista.getUsername());
         nuevoArtista.setDescripcion(artista.getDescripcion());
         nuevoArtista.setEmail(artista.getEmail());
-        //busca la cancion segun su id
+
+        // Busca las canciones por su ID
         List<Cancion> canciones = cancionRepository.findAllById(artista.getCancionIdList());
         nuevoArtista.setCanciones(canciones);
+
+        // Verifica si el Artista ya existe
+        Optional<Artista> foundArtistaByUsername = artistaRepository.findByUsername(nuevoArtista.getUsername());
+        if (foundArtistaByUsername.isPresent()) {
+            throw new ResourceConflictException("Artista already exists");
+        }
+        // Guarda el nuevo Artista
         Artista savedArtista = artistaRepository.save(nuevoArtista);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArtista);
+        return ResponseEntity.ok(savedArtista);
     }
+
 
     /* Aqui se busca una canción mediante id, pero no se usa dtos
     Es decir, esta trabajando directamente con la base de datos
