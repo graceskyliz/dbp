@@ -7,10 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/artista")
+
+/*
+Hasta ahora el proyecto recibe un nuevo artista, pero no se me permite ver la lista completa de
+artistas con get
+*/
+
 
 
 public class ArtistaController {
@@ -22,7 +29,7 @@ public class ArtistaController {
         return ResponseEntity.ok(artistaRepository.save(artista));
     }
 
-    @GetMapping("{id}") //acceder a la lista de artistas creados con las persona
+    @GetMapping("/{id}") //acceder a la lista de artistas creados con las persona
     ResponseEntity<Artista> get(@PathVariable Long id) {
         Optional<Artista> artista = artistaRepository.findById(id);
         if (artista.isPresent()) {
@@ -30,5 +37,9 @@ public class ArtistaController {
             //es para el cliente, sabe con que status
         }
         throw new ResourceNotFoundException("El artista " + id + " no fue encontrado");
+    }
+    @GetMapping("/all") //muestra todos los artistas en consola
+    ResponseEntity<List<Artista>> getAll() {
+        return ResponseEntity.ok(artistaRepository.findAll());
     }
 }
