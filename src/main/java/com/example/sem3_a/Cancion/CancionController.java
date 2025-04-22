@@ -15,10 +15,12 @@ public class CancionController {
     @Autowired
     CancionRepository cancionRepository;
 
+
     @PostMapping
     public ResponseEntity<Cancion> post(@RequestBody Cancion c) {
         return ResponseEntity.ok(cancionRepository.save(c));
     }
+
     @GetMapping("{id}")
     public ResponseEntity<Cancion> get(@PathVariable Long id) {
         Optional<Cancion> cancion = cancionRepository.findById(id);

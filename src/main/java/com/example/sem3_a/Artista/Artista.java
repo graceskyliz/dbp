@@ -25,5 +25,4 @@ public class Artista {
     private List<Cancion> canciones;
     //ola
 
-
 }

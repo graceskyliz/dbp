@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class NewArtistaDto {
 
@@ -16,4 +19,7 @@ public class NewArtistaDto {
     @Email
     private String email;
 
+    private List<Long> cancionIdList = new ArrayList<>();
+    //esta creando una lista de ids de canciones
+    //luego la base de datos se encarga de conectar esta
 }

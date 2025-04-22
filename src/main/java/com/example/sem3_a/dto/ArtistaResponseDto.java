@@ -9,5 +9,5 @@ import java.util.List;
 
 public class ArtistaResponseDto {
     private String username;
-    private List<Long> cancionIdList = new ArrayList<>();
+    private List<Long> cancionIdList;
 }
